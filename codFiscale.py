@@ -40,3 +40,15 @@ class CodFiscale:
 
         parteC, parteV = self.__dividiConsVoc(self.__cognome)
         return self.__restaParte(parteC, parteV)
+
+    def creaParteNome(self):
+        """Metodo publico che restituisce Parte Nome"""
+
+        parteC, parteV=self.__dividiConsVoc(self.__nome)
+        l= len(parteC)
+
+        if l>=4:
+             parteC=parteC[0:1]+parteC[2:3]+parteC[3:4]
+             return parteC
+
+        return self.__restaParte(parteC, parteV)
