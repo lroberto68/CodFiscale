@@ -75,13 +75,14 @@ class CodFiscale:
 
         try:
 
-            with open("listadcomuni.txt", encoding="ISO-8859-1") as fileComuni:
+            with open("listacomuni.txt", encoding="ISO-8859-1") as fileComuni:
                 listaComuni = fileComuni.readlines()
                 for ln in listaComuni:
                     if ";" + self.__luogoNascita + ";" in ln:
                         codiceLuogo = ln.split(';')[6]
                         return codiceLuogo
-                return f"\033[91m Luogo {self.__luogoNascita} non trovato. Calcolo del CF sospeso \033[0m"
+                
+            return f"\033[91m Luogo {self.__luogoNascita} non trovato. Calcolo del CF sospeso \033[0m"
 
         except FileNotFoundError:
             mes = "\033[91m File listacomuni.txt non esistente. Calcolo del CF sospeso \033[0m. Verificare"
