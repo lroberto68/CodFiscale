@@ -44,26 +44,46 @@ class CodFiscale:
     def creaParteNome(self):
         """Metodo public che restituisce Parte Nome"""
 
-        parteC, parteV=self.__dividiConsVoc(self.__nome)
-        l= len(parteC)
+        parteC, parteV = self.__dividiConsVoc(self.__nome)
+        lun = len(parteC)
 
-        if l>=4:
-             parteC=parteC[0:1]+parteC[2:3]+parteC[3:4]
-             return parteC
+        if lun >= 4:
+            parteC = parteC[0:1] + parteC[2:3] + parteC[3:4]
+            return parteC
 
         return self.__restaParte(parteC, parteV)
 
     def creaParteData(self):
         """Metodo public che restituisce Parte Data"""
 
-        tbMese={'Jan':'A','Feb':'B','Mar':'C','Apr':'D','May':'E','Jun':'H','Jul':'L','Aug':'M','Sep':'P','Oct':'R','Nov':'S','Dec':'T'}
-        
-        if self.__sesso=='F':
-            gg=40
-        elif self.__sesso=='M':
-            gg=0
-        
-        giorno=int(self.__dataNascita.strftime('%d'))+gg
-        parteData=self.__dataNascita.strftime('%y')+tbMese[self.__dataNascita.strftime('%b')]+ str(giorno).rjust(2,'0')
-        
+        tbMese = {'Jan': 'A', 'Feb': 'B', 'Mar': 'C', 'Apr': 'D', 'May': 'E', 'Jun': 'H', 'Jul': 'L', 'Aug': 'M',
+                  'Sep': 'P', 'Oct': 'R', 'Nov': 'S', 'Dec': 'T'}
+
+        if self.__sesso == 'F':
+            gg = 40
+        elif self.__sesso == 'M':
+            gg = 0
+
+        giorno = int(self.__dataNascita.strftime('%d')) + gg
+        parteData = self.__dataNascita.strftime('%y') + tbMese[self.__dataNascita.strftime('%b')] + str(giorno).rjust(2,
+                                                                                                                      '0')
+
         return parteData
+
+    def creaParteLuogo(self):
+        """Metodo public che restituisce codice Luogo"""
+
+        try:
+
+            with open("listadcomuni.txt", encoding="ISO-8859-1") as fileComuni:
+                listaComuni = fileComuni.readlines()
+                for ln in listaComuni:
+                    if ";" + self.__luogoNascita + ";" in ln:
+                        codiceLuogo = ln.split(';')[6]
+                        return codiceLuogo
+                return f"\033[91m Luogo {self.__luogoNascita} non trovato. Calcolo del CF sospeso \033[0m"
+
+        except FileNotFoundError:
+            mes = "\033[91m File listacomuni.txt non esistente. Calcolo del CF sospeso \033[0m. Verificare"
+            print(mes)
+            return mes
