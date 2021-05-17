@@ -3,13 +3,14 @@ from datetime import date as dt
 
 class CodFiscale:
 
-    def __init__(self, cognome, nome, sesso, dataNascita, luogoNascita):
+    def __init__(self, cognome, nome, sesso, dataNascita,  luogoNascita='', nazioneNascita='ITALIA'):
         """Costruttore delle clase CodFiscale"""
 
         self.__cognome = cognome.upper()
         self.__nome = nome.upper()
         self.__sesso = sesso
         self.__dataNascita = dataNascita
+        self.__nazioneNascita = nazioneNascita
         self.__luogoNascita = luogoNascita
 
     def __dividiConsVoc(self, cogNom):
@@ -65,26 +66,31 @@ class CodFiscale:
             gg = 0
 
         giorno = int(self.__dataNascita.strftime('%d')) + gg
-        parteData = self.__dataNascita.strftime('%y') + tbMese[self.__dataNascita.strftime('%b')] + str(giorno).rjust(2,
-                                                                                                                      '0')
+        parteData = self.__dataNascita.strftime('%y') + tbMese[self.__dataNascita.strftime('%b')] + str(giorno).rjust(2, '0')
 
         return parteData
+
+    def __cercaLuogo(self, file, luogo, indice):
+        """Metodo privato per ricerca del codice Luogo o Nazione"""
+
+        try:
+            with open(file, encoding="ISO-8859-1") as fileLuogo:
+                listaLuogo = fileLuogo.readlines()
+                for ln in listaLuogo:
+                    if ";" + luogo + ";" in ln:
+                        codiceLuogo = ln.split(';')[indice]
+                        return codiceLuogo
+            return f"\033[91m Luogo {luogo} non trovato. Calcolo del CF sospeso \033[0m"
+
+        except FileNotFoundError:
+            mes = f"\033[91m File {file} non esistente. Calcolo del CF sospeso \033[0m. Verificare"
+            print(mes)
+            return mes
 
     def creaParteLuogo(self):
         """Metodo public che restituisce codice Luogo"""
 
-        try:
-
-            with open("listacomuni.txt", encoding="ISO-8859-1") as fileComuni:
-                listaComuni = fileComuni.readlines()
-                for ln in listaComuni:
-                    if ";" + self.__luogoNascita + ";" in ln:
-                        codiceLuogo = ln.split(';')[6]
-                        return codiceLuogo
-                
-            return f"\033[91m Luogo {self.__luogoNascita} non trovato. Calcolo del CF sospeso \033[0m"
-
-        except FileNotFoundError:
-            mes = "\033[91m File listacomuni.txt non esistente. Calcolo del CF sospeso \033[0m. Verificare"
-            print(mes)
-            return mes
+        if self.__nazioneNascita == 'ITALIA':
+            return self.__cercaLuogo("listacomuni.txt", self.__luogoNascita, 6)
+        else:
+            return self.__cercaLuogo("listaesteri.txt", self.__nazioneNascita, 9)
