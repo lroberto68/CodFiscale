@@ -85,7 +85,7 @@ class CodFiscale:
         except FileNotFoundError:
             mes = f"\033[91m File {file} non esistente. Calcolo del CF sospeso \033[0m. Verificare"
             print(mes)
-            return mes
+            return mes  # Ritorna eventuale messaggio di errore per file listacomuni.txt o listaesteri.txt non esistente
 
     def creaParteLuogo(self):
         """Metodo public che restituisce codice Luogo"""
@@ -94,3 +94,40 @@ class CodFiscale:
             return self.__cercaLuogo("listacomuni.txt", self.__luogoNascita, 6)
         else:
             return self.__cercaLuogo("listaesteri.txt", self.__nazioneNascita, 9)
+
+    def __partePariDisp(self, car, p):
+        """Metodo private che ricava la somma dei codici delle posizioni Pari e Dispari dei primi 15 caratteri del CF"""
+
+        cf = f"{self.creaParteCognome()}{self.creaParteNome()+self.creaParteData()+self.creaParteLuogo()}"
+
+        parametro = 0
+
+        for i in range(p, len(cf), 2):
+            for d in car:
+                if cf[i] + ';' in d:
+                    parametro += int(d.split(';')[1])
+        return parametro  # Restitusce la somma dei codici dei caratteri in posizione Pari (p=1) e Dispari (p=0)
+
+    def creaCin(self):
+        """Metodo Public per calcolare il CIN del CF"""
+
+        try:
+            with open("CaratAlfaDispari.txt", encoding="ISO-8859-1") as fileDis:
+                carDis = fileDis.readlines()
+            with open("CaratAlfaPari.txt", encoding="ISO-8859-1") as filePar:
+                carPar = filePar.readlines()
+            with open("Resto.txt", encoding="ISO-8859-1") as fileRes:
+                resto = fileRes.readlines()
+        except FileNotFoundError as e:
+            mes = f = "\033[91m {str(e)} Calcolo del CF sospeso \033[0m. Verificare"
+            print (mes)
+            return mes
+
+        codCin = (self.__partePariDisp(carPar, 1) + self.__partePariDisp(carDis, 0)) % 26
+
+        dizResto={}
+
+        for ln in resto:
+            (key, val) = ln.split(';')
+            dizResto[int(key)] = val
+        return dizResto[codCin][:1]
