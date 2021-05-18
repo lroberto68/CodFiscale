@@ -131,3 +131,8 @@ class CodFiscale:
             (key, val) = ln.split(';')
             dizResto[int(key)] = val
         return dizResto[codCin][:1]
+
+    def stampaCF(self):
+        """Metodo che ritorna il CF completo"""
+
+        return f"{self.creaParteCognome()}{self.creaParteNome()}{self.creaParteData()}{self.creaParteLuogo()}{self.creaCin()}"
