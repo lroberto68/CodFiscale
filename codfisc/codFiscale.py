@@ -91,9 +91,9 @@ class CodFiscale:
         """Metodo public che restituisce codice Luogo"""
 
         if self.__nazioneNascita == 'ITALIA':
-            return self.__cercaLuogo("listacomuni.txt", self.__luogoNascita, 6)
+            return self.__cercaLuogo("data//listacomuni.txt", self.__luogoNascita, 6)
         else:
-            return self.__cercaLuogo("listaesteri.txt", self.__nazioneNascita, 9)
+            return self.__cercaLuogo("data//listaesteri.txt", self.__nazioneNascita, 9)
 
     def __partePariDisp(self, car, p):
         """Metodo private che ricava la somma dei codici delle posizioni Pari e Dispari dei primi 15 caratteri del CF"""
@@ -112,14 +112,14 @@ class CodFiscale:
         """Metodo Public per calcolare il CIN del CF"""
 
         try:
-            with open("CaratAlfaDispari.txt", encoding="ISO-8859-1") as fileDis:
+            with open("data//CaratAlfaDispari.txt", encoding="ISO-8859-1") as fileDis:
                 carDis = fileDis.readlines()
-            with open("CaratAlfaPari.txt", encoding="ISO-8859-1") as filePar:
+            with open("data//CaratAlfaPari.txt", encoding="ISO-8859-1") as filePar:
                 carPar = filePar.readlines()
-            with open("Resto.txt", encoding="ISO-8859-1") as fileRes:
+            with open("data//Resto.txt", encoding="ISO-8859-1") as fileRes:
                 resto = fileRes.readlines()
         except FileNotFoundError as e:
-            mes = f = "\033[91m {str(e)} Calcolo del CF sospeso \033[0m. Verificare"
+            mes = f"\033[91m {str(e)} Calcolo del CF sospeso \033[0m. Verificare"
             print (mes)
             return mes
 

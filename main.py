@@ -1,4 +1,5 @@
-from codFiscale import CodFiscale
+from codfisc.codFiscale import CodFiscale
+
 from datetime import date as dt
 
 def main():
